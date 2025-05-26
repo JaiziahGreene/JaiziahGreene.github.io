@@ -1,2 +1,0 @@
-# JaiziahGreene.github.io
-Website
