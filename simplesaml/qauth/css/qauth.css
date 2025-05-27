@@ -1,0 +1,34 @@
+#authqcode {
+  position: absolute;
+  z-index: 9;
+  background-color: #f1f1f1;
+  border: 1px solid #d3d3d3;
+  text-align: center;
+}
+#authqcodeheader {
+  padding: 10px;
+  margin: 10px;
+  background-color: #2196F3;
+  color: #fff;
+  cursor: move;
+  z-index: 10;
+}
+#qapp {
+  background: #363238;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  height: 70%;
+  flex-direction: row;
+}
+.empty {
+  font-style: italic;
+}
+.preview-container {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  width: 100%;
+  overflow: hidden;
+}
