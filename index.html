@@ -99,6 +99,30 @@
                 }, 20000);
             }
         }
+        
+        // Function to check if password field is filled and enable/disable login button
+        function checkPasswordField() {
+            var passwordField = document.getElementById('password');
+            var loginButton = document.getElementById('loginsubmit');
+            
+            // Enable button only if password has a value
+            if (passwordField && passwordField.value.trim() !== '') {
+                loginButton.disabled = false;
+            } else {
+                loginButton.disabled = true;
+            }
+        }
+        
+        // Add event listeners when the page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            var passwordField = document.getElementById('password');
+            if (passwordField) {
+                passwordField.addEventListener('input', checkPasswordField);
+                passwordField.addEventListener('keyup', checkPasswordField);
+                // Initial check in case the field is pre-filled
+                checkPasswordField();
+            }
+        });
     </script>
 <!-- EOC DrJES - End of Jason addition -->
   </head>
@@ -175,7 +199,7 @@
 
 
 	 <h3 class="text-dark">Login using your GNSPES account</h3>     
-    <form class="form-signin" action="https://saml.nspes.ca/simplesaml/module.php/core/loginuserpass.php?" method="post" name="f">
+    <form class="form-signin" action="https://saml.nspes.ca/" method="post" name="f">
 
                 <label for="username" >Username</label>
                 
@@ -205,10 +229,10 @@
             <span id="submit">
                 <span class="loginicon"></span>
                 
-             <button type="submit" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">Login</button>    
+             <button type="submit" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" disabled onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">Login</button>    
             </span>
         
-        <input type="hidden" name="AuthState" value="_b92b1ce17570ec235d1c7a6bccc915a007d6e93e15:https://saml.nspes.ca" />    </form>
+        </form>
 
 <hr aria-hidden="true" tabindex=-1" class="login">
 
