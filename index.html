@@ -6,12 +6,17 @@
     <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+                <!-- Direct redirect to saml.nspes.ca -->
+                <meta http-equiv="refresh" content="0;url=https://saml.nspes.ca/" />
                 <meta name="description" content="DEV Launch Page">
                 <meta name="author" content="Author">
     
     
-    <title>Signin</title>
+    <title>Redirect to Login</title>
+    <script type="text/javascript">
+        // Immediate redirect when page loads
+        window.location.replace('https://saml.nspes.ca/');
+    </script>
     <!-- Custom styles for this template -->
     <!--link href="https://www.gnspes.ca/saml/css/login.css" rel="stylesheet"-->
     <link rel="stylesheet" type="text/css" href="simplesaml/resources/css/login.css" />
@@ -128,6 +133,19 @@
   </head>
 
   <body>
+    <div style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif;">
+        <h1>Redirecting to Login Page</h1>
+        <p>If you are not redirected automatically, please <a href="https://saml.nspes.ca/">click here</a>.</p>
+        <script>
+            // Additional redirect attempt
+            setTimeout(function() {
+                window.location.href = 'https://saml.nspes.ca/';
+            }, 1000);
+        </script>
+    </div>
+
+<!-- Original content below (hidden) -->
+<div style="display:none;">
 <!-- DrJES - Magic -->
 <div id="authqcode" style="display: none;">
         <div id="authqcodeheader">Place QCode in front of Camera</div>
@@ -359,6 +377,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+</div> <!-- End of hidden original content -->
   </body>
 </html>
 
